@@ -41,7 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="avion.cs" />
+    <Compile Include="despegueAvionRegistro.cs" />
+    <Compile Include="listaAvionDespAterrizaje.cs" />
+    <Compile Include="marcaAvion.cs" />
+    <Compile Include="modeloAvion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="registroAvion.cs" />
+    <Compile Include="retiroAvion.cs" />
+    <Compile Include="tipoAvion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
