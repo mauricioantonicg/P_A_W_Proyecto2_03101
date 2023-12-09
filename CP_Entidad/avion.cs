@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CP_Entidad
 {
-   public class avion
+   public class avion : tipoAvion
    {
       public int numAvion { get; set; }
       public string serieAvion { get; set; }

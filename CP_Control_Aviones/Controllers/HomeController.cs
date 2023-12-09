@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CP_Entidad;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +8,27 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
+using System.Web.UI;
 
 namespace CP_Control_Aviones.Controllers
 {
    public class HomeController : Controller
    {
+      List<avion> listaAviones;
+
       public ActionResult Index()
       {
          return View();
       }
 
+      public ActionResult IngresarNuevoAvion()
+      {
+         return View();
+      }
+
+      //Metodo de prueba de conexion con la api, se usa el async con el task para especificar que la consulta es asyncrona
+      //de lo contrario la peticio sera sincronica 
       public async Task<string> probarConexionConApi()
       {
 
@@ -63,7 +75,7 @@ namespace CP_Control_Aviones.Controllers
          var contenidoHttp = new StringContent(Convert.ToString(jsonParametros), Encoding.UTF8, "application/json");
 
          //Variable que almacena la respuesta de la api 
-         var respuesta = clienteHttp.PostAsync(urlPost, contenidoHttp).Result;  
+         var respuesta = clienteHttp.PostAsync(urlPost, contenidoHttp).Result;
 
          //Variable para leer la respuesta 
          var leerRespuesta = respuesta.Content.ReadAsStringAsync().Result;
@@ -74,11 +86,34 @@ namespace CP_Control_Aviones.Controllers
          return "";
       }
 
-      public ActionResult Contact()
-      {
-         ViewBag.Message = "Your contact page.";
 
-         return View();
+      //Devolver la lista temporal de aviones  
+      public JsonResult ListaTemporalAviones()
+      {
+         return Json(new { data = Session["listaAviones"] }, JsonRequestBehavior.AllowGet);
+      }
+
+      //Agregar un nuevo avion a la lista temporal 
+      public JsonResult agregarAvionAListaTemporal(avion datosAvion)
+      {
+         //Extraer la lista temporal de aviones de la sesion  
+         listaAviones = (List<avion>) Session["listaAviones"];
+
+         //Agregar los datos del nuevo avion a la sesion 
+         if (listaAviones != null)
+         {            
+            listaAviones.Add(datosAvion);
+         }
+         else
+         {
+            listaAviones = new List<avion>();
+            listaAviones.Add(datosAvion);
+         }         
+
+         //Agregar la lista de aviones nuevamente a la variable de sesion 
+         Session["listaAviones"] = listaAviones;
+
+         return Json(new { mensaje = "1" }, JsonRequestBehavior.AllowGet);
       }
    }
 }

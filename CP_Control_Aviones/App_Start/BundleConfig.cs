@@ -12,6 +12,8 @@ namespace CP_Control_Aviones
                      "~/Scripts/jquery-{version}.js"));
 
          bundles.Add(new Bundle("~/bundles/complementos").Include(
+                     "~/Scripts/DataTables/jquery.dataTables.js",
+                     "~/Scripts/DataTables/dataTables.responsive.js",
                      "~/Scripts/fontawesome/all.min.js",
                      "~/Scripts/scripts.js"));
 
@@ -27,6 +29,8 @@ namespace CP_Control_Aviones
                    "~/Scripts/bootstrap.bundle.js"));
 
          bundles.Add(new StyleBundle("~/Content/css").Include(
+                   "~/Content/DataTables/css/jquery.dataTables.css",
+                   "~/Content/DataTables/css/responsive.dataTables.css",
                    //"~/Content/bootstrap.css",
                    "~/Content/site.css"));
       }

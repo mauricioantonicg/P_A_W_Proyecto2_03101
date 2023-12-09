@@ -1,0 +1,219 @@
+﻿
+@{
+    ViewBag.Title = "Ingresar Nuevo Avion";
+}
+
+<h2>Ingresar Nuevo Avión</h2>
+
+<div class="card mt-4">
+
+    <div class="card-header">
+        <i class="fas fa-list me-1"></i> Lista de aviones ingresados
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-primary" onclick="abrirFormAgEncModal()">Ingresar Avión</button>
+            </div>
+        </div>
+
+        <hr />
+
+        <table id="tablaListaAviones" class="display cell-border" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th># Serie</th>
+                    <th>Nombre</th>
+                    <th>Ancho</th>
+                    <th>Alto</th>
+                    <th>Largo</th>
+                    <th>Distancia máxima con combustible lleno</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="form_AgregarAvion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white ">
+                <h5>Agregar avión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row g-2">
+
+                    <div class="col-sm-6">
+                        <label for="slt_MarcaAvion" class="badge bg-secondary">Marca</label>
+                        <select id="slt_MarcaAvion" class="form-select mw-100" aria-label="Default select example">
+                            <option value="0">Seleccione la marca</option>
+                            <option value="1">Airbus</option>
+                            <option value="2">EMBRAER</option>
+                            <option value="3">Airbus Helicopters</option>
+                            <option value="4">BOEING</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="slt_Modelo" class="badge bg-secondary">Modelo</label>
+                        <select id="slt_Modelo" class="form-select mw-100" aria-label="Default select example">
+                            <option value="0">Seleccione el modelo</option>
+                            <option value="1">Airbus 319</option>
+                            <option value="2">Boeing 737</option>
+                            <option value="3">Airbus 340</option>
+                            <option value="4">Antonov 225</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txt_Serie" class="badge bg-secondary"># Serie</label>
+                        <input type="text" id="txt_Serie" class="form-control mw-100">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txt_NombreAvion" class="badge bg-secondary">Nombre del avión</label>
+                        <input type="text" id="txt_NombreAvion" class="form-control mw-100">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txt_Ancho" class="badge bg-secondary">Ancho</label>
+                        <input type="text" id="txt_Ancho" class="form-control mw-100">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txt_Alto" class="badge bg-secondary">Alto</label>
+                        <input type="text" id="txt_Alto" class="form-control mw-100">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txt_Largo" class="badge bg-secondary">Largo</label>
+                        <input type="text" id="txt_Largo" class="form-control mw-100">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="txt_DistanciaMaxCombustibLleno" class="badge bg-secondary">Distancia maxima con combustible lleno</label>
+                        <input type="text" id="txt_DistanciaMaxCombustibLleno" class="form-control mw-100">
+                    </div>
+
+                </div>
+
+                @*Mensaje de error de validacion*@
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div id="mensajeError" class="alert alert-danger" role="alert"></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="IngresarNewAvion()">Incluir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            ListaTemporalAviones();
+        });
+
+        //Llenar datatable con los datos de los aviones ingresados en la lista temporal en la sesion
+        function ListaTemporalAviones() {
+
+            var tabladata;
+
+            tabladata = $("#tablaListaAviones").DataTable({
+                responsive: true,
+                ordering: false,
+                "ajax": {
+                    url: '@Url.Action("ListaTemporalAviones", "Home")',
+                    type: "GET",
+                    dataType: "json"
+                },
+                "columnDefs": [
+                    { "targets": [0], data: "nombreMarcaAvion" },
+                    { "targets": [1], data: "nombreModeloAvion" },
+                    { "targets": [2], data: "serieAvion" },
+                    { "targets": [3], data: "nombreFantasiaAvion" },
+                    { "targets": [4], data: "anchoAvion" },
+                    { "targets": [5], data: "altoAvion" },
+                    { "targets": [6], data: "largoAvion" },
+                    { "targets": [7], data: "distanciaCombustibleAvion" }
+                ],
+            });
+        }
+
+        //Abrir el formulario modal para agregar un nuevo avion
+        function abrirFormAgEncModal() {
+            $("#form_AgregarAvion").modal("show");
+            $("#mensajeError").hide();
+        }
+
+        //Guardar los datos de un nuevo avion en la tabla temporal
+        function IngresarNewAvion() {
+            //Ocultar mensaje con error de validacion
+            $("#mensajeError").hide();
+
+            //Datos del formulario avion
+            var nombreMarcaAvion = $("#slt_MarcaAvion").val();
+            var nombreModeloAvion = $("#slt_Modelo").val();
+            var serieAvion = $("#txt_Serie").val();
+            var nombreFantasiaAvion = $("#txt_NombreAvion").val();
+            var anchoAvion = $("#txt_Ancho").val();
+            var altoAvion = $("#txt_Alto").val();
+            var largoAvion = $("#txt_Largo").val();
+            var distanciaCombustibleAvion = $("#txt_DistanciaMaxCombustibLleno").val();
+
+            var datosAvion = {
+                nombreMarcaAvion,
+                nombreModeloAvion,
+                serieAvion,
+                nombreFantasiaAvion,
+                anchoAvion,
+                altoAvion,
+                largoAvion,
+                distanciaCombustibleAvion
+            }
+
+            //Enviar datos al controlador
+            jQuery.ajax({
+                url: '@Url.Action("agregarAvionAListaTemporal", "Home")',
+                type: "POST",
+                data: JSON.stringify({ datosAvion: datosAvion }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    var mensaje = data.mensaje;
+
+                    //Validacion de campos del formulario
+                    if (mensaje == 1) {
+
+                        //Recargar la pagina de la encuesta
+                        window.location.href = '@Url.Action("IngresarNuevoAvion", "Home")';
+                    }                    
+                },
+                error: function (error) {
+                    alert(error);
+                },
+                beforedSend: function () {
+
+                }
+            });
+        }
+
+    </script>
+}
+
