@@ -227,13 +227,19 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
 
+                    debugger;
+
                     var mensaje = data.mensaje;
 
                     //Validacion de campos del formulario
                     if (mensaje == 1) {
 
+                        alert("Se registro el avión");
+
                         //Recargar la pagina de la encuesta
                         window.location.href = '@Url.Action("GuardarNuevoAvion", "Home")';
+                    } else {
+                        alert("No se registro el avión");
                     }
                 },
                 error: function (error) {

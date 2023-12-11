@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using System.Web.Services.Description;
 using System.Web.UI;
 
@@ -126,7 +127,37 @@ namespace CP_Control_Aviones.Controllers
       //Agregar un nuevo avion a la lista temporal 
       public JsonResult GuardarAvionBD(avion datosAvion)
       {
-         string resultado = string.Empty;
+         //Enviar los datos del registro de un nuevo avion a la api
+
+         //String con la url de la api
+         string urlPost = "https://localhost:44303/Home/RegistrarNewAvionBD";
+
+         //Variable de http para la conexion 
+         var clienteHttp = new HttpClient();
+
+         //Limpiar cabecera de la peticion ya que no se requiere token de autorizacion 
+         clienteHttp.DefaultRequestHeaders.Clear();
+
+         //Convertir a string el objeto avion 
+         string datosAvionJason = new JavaScriptSerializer().Serialize(datosAvion);
+
+         //Parametros que llevara la peticion 
+         string parametros = datosAvionJason;
+
+         //Convertir los parametros a Json
+         dynamic jsonParametros = JObject.Parse(parametros);
+
+         //Agregar el contenido o parametros a la peticion 
+         var contenidoHttp = new StringContent(Convert.ToString(jsonParametros), Encoding.UTF8, "application/json");
+
+         //Variable que almacena la respuesta de la api 
+         var respuesta = clienteHttp.PostAsync(urlPost, contenidoHttp).Result;
+
+         //Variable para leer la respuesta 
+         var leerRespuesta = respuesta.Content.ReadAsStringAsync().Result;
+
+         //Convertir la respuesta en Json 
+         dynamic jsonRespuesta = JObject.Parse(leerRespuesta);
 
          return Json(new { mensaje = "1" }, JsonRequestBehavior.AllowGet);
       }
