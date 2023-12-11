@@ -88,35 +88,37 @@ detallesAterrizajeAvion varchar (200) not null
 go
 
 
+insert into marcaAvion (nombreMarcaAvion) values 
+('Airbus'), 
+('EMBRAER'),
+('Airbus Helicopters'),
+('BOEING')
+go
 
+insert into modeloAvion (nombreModeloAvion, anchoAvion, altoAvion, largoAvion, distanciaCombustibleAvion) values 
+('Airbus 319', '30', '20', '60', '500'), 
+('Boeing 737', '40', '30', '70', '600'),
+('Airbus 340', '50', '40', '80', '700'),
+('Antonov 225', '60', '70', '90', '800')
+go
 
-create proc sp_AgregarEncuesta(
-@nombrePersona varchar,
-@apellido1 varchar,
-@idPais int,
-@idRolPersona int,
-@idLenguajeProgPrimario int,
-@idLenguajeProgSecundario int
+insert into tipoAvion (idMarcaAvio, idModeloAvio, cantidadAviones) values 
+('1', '1', '0'), 
+('2', '2', '0'),
+('3', '3', '0'),
+('4', '4', '0')
+go
+
+create proc sp_RegistrarNewAvion( 
+@serieAvion varchar (45),
+@nombreFantasiaAvion varchar (45),
+@idTipoAvio int
 )
 as
 begin
-   insert into persona(nombrePersona, apellido1, idPais, idRolPersona, idLenguajeProgPrimario, idLenguajeProgSecundario) 
-        values (@nombrePersona, @apellido1, @idPais, @idRolPersona, @idLenguajeProgPrimario, @idLenguajeProgSecundario)
+   insert into avion (serieAvion, nombreFantasiaAvion, idTipoAvio, estadoAvionRetOActivo) 
+        values (@serieAvion, @nombreFantasiaAvion, @idTipoAvio, 1)
 end
-
-create proc sp_PuntuarLenguaje(
-@idLenguajeProgram int,
-@puntuacionLenguaje decimal (7,2)
-)
-as
-begin
-   UPDATE lenguajeProgramacion SET puntuacionLenguaje = @puntuacionLenguaje WHERE idLenguajeProgram = @idLenguajeProgram
-end
-
-
-select * from lenguajeProgramacion order by puntuacionLenguaje desc
-
-select * from persona
 
 
 
