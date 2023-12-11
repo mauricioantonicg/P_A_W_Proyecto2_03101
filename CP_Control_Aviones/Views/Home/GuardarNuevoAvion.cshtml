@@ -1,9 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "Ingresar Nuevo Avion";
+    ViewBag.Title = "GuardarNuevoAvion";
 }
 
-<h2>Ingresar Nuevo Avión</h2>
+<h2>Guardar Nuevo Avión</h2>
 
 <div class="card mt-4">
 
@@ -14,7 +14,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-12">
-                <button type="button" class="btn btn-primary" onclick="abrirFormAgEncModal()">Ingresar Avión</button>
+                @*<button type="button" class="btn btn-primary" onclick="abrirFormAgEncModal()">Ingresar Avión</button>*@
             </div>
         </div>
 
@@ -31,6 +31,7 @@
                     <th>Alto</th>
                     <th>Largo</th>
                     <th>Distancia máxima con combustible lleno</th>
+                    <th>Guardar</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,11 +42,11 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="form_AgregarAvion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="form_GuardarAvion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-dark text-white ">
-                <h5>Agregar avión</h5>
+                <h5>Guardar avión</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -104,6 +105,21 @@
                         <input type="text" id="txt_DistanciaMaxCombustibLleno" class="form-control mw-100">
                     </div>
 
+                    <div class="col-sm-6">
+                        <label for="txt_NombreTecnicoRegAvion" class="badge bg-secondary">Nombre del tecnico que registra</label>
+                        <input type="text" id="txt_NombreTecnicoRegAvion" class="form-control mw-100">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="dt_FechaRegistroAvion" class="badge bg-secondary">Fecha de registro</label>
+                        <input type="date" id="dt_FechaRegistroAvion" class="form-control mw-100">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="tm_HoraRegistroAvion" class="badge bg-secondary">Hora del registro</label>
+                        <input type="time" id="tm_HoraRegistroAvion" class="form-control mw-100">
+                    </div>
+
                 </div>
 
                 @*Mensaje de error de validacion*@
@@ -116,7 +132,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" onclick="IngresarNewAvion()">Incluir</button>
+                <button type="button" class="btn btn-primary" onclick="GuardarNewAvion()">Guardar</button>
             </div>
         </div>
     </div>
@@ -142,27 +158,36 @@
                     type: "GET",
                     dataType: "json"
                 },
-                "columnDefs": [
-                    { "targets": [0], data: "nombreMarcaAvion" },
-                    { "targets": [1], data: "nombreModeloAvion" },
-                    { "targets": [2], data: "serieAvion" },
-                    { "targets": [3], data: "nombreFantasiaAvion" },
-                    { "targets": [4], data: "anchoAvion" },
-                    { "targets": [5], data: "altoAvion" },
-                    { "targets": [6], data: "largoAvion" },
-                    { "targets": [7], data: "distanciaCombustibleAvion" }
+                "columns": [
+                    { "data": [0], data: "nombreMarcaAvion" },
+                    { "data": [1], data: "nombreModeloAvion" },
+                    { "data": [2], data: "serieAvion" },
+                    { "data": [3], data: "nombreFantasiaAvion" },
+                    { "data": [4], data: "anchoAvion" },
+                    { "data": [5], data: "altoAvion" },
+                    { "data": [6], data: "largoAvion" },
+                    { "data": [7], data: "distanciaCombustibleAvion" },
+                    {
+                        "defaultContent": "<button type='button' class='btn btn-primary btn_GuardarNewRegistroAvion'>Guardar</button>",
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "60px"
+                    }
                 ],
             });
         }
 
         //Abrir el formulario modal para agregar un nuevo avion
         function abrirFormAgEncModal() {
-            $("#form_AgregarAvion").modal("show");
+
+            $("#form_GuardarAvion").modal("show");
             $("#mensajeError").hide();
+
+            //Cargar los datos del avion que se quiere almacenar en la base de datos
         }
 
-        //Guardar los datos de un nuevo avion en la tabla temporal
-        function IngresarNewAvion() {
+        //Guardar los datos de un nuevo avion en la base de datos
+        function GuardarNewAvion() {
             //Ocultar mensaje con error de validacion
             $("#mensajeError").hide();
 
@@ -175,6 +200,9 @@
             var altoAvion = $("#txt_Alto").val();
             var largoAvion = $("#txt_Largo").val();
             var distanciaCombustibleAvion = $("#txt_DistanciaMaxCombustibLleno").val();
+            var nombreTecnicoRegistraAvion = $("#txt_NombreTecnicoRegAvion").val();
+            var fechaRegistroAvion = $("#dt_FechaRegistroAvion").val();
+            var horaRegistroAvion = $("#tm_HoraRegistroAvion").val();
 
             var datosAvion = {
                 nombreMarcaAvion,
@@ -184,12 +212,15 @@
                 anchoAvion,
                 altoAvion,
                 largoAvion,
-                distanciaCombustibleAvion
+                distanciaCombustibleAvion,
+                nombreTecnicoRegistraAvion,
+                fechaRegistroAvion,
+                horaRegistroAvion
             }
 
             //Enviar datos al controlador
             jQuery.ajax({
-                url: '@Url.Action("IngresarAvionAListaTemporal", "Home")',
+                url: '@Url.Action("GuardarAvionBD", "Home")',
                 type: "POST",
                 data: JSON.stringify({ datosAvion: datosAvion }),
                 dataType: "json",
@@ -202,8 +233,8 @@
                     if (mensaje == 1) {
 
                         //Recargar la pagina de la encuesta
-                        window.location.href = '@Url.Action("IngresarNuevoAvion", "Home")';
-                    }                    
+                        window.location.href = '@Url.Action("GuardarNuevoAvion", "Home")';
+                    }
                 },
                 error: function (error) {
                     alert(error);
@@ -214,6 +245,52 @@
             });
         }
 
+        //Obtener datos de la fila y cargarlos en la ventana modal
+        $("#tablaListaAviones tbody").on("click", '.btn_GuardarNewRegistroAvion', function ()
+        {            
+            var filaSeleccionada = $(this).closest("tr");
+
+            var table = $('#tablaListaAviones').DataTable();
+
+            var datos = table.row(filaSeleccionada).data();
+
+            $("#slt_MarcaAvion").val(datos.nombreMarcaAvion);
+            $("#slt_Modelo").val(datos.nombreModeloAvion);            
+            $("#txt_Serie").val(datos.serieAvion);
+            $("#txt_NombreAvion").val(datos.nombreFantasiaAvion);
+            $("#txt_Ancho").val(datos.anchoAvion);
+            $("#txt_Alto").val(datos.altoAvion);
+            $("#txt_Largo").val(datos.largoAvion);
+            $("#txt_DistanciaMaxCombustibLleno").val(datos.distanciaCombustibleAvion);
+
+            abrirFormAgEncModal();
+
+            @*//Enviar datos al controlador
+            jQuery.ajax({
+                url: '@Url.Action("GuardarAvionBD", "Home")',
+                type: "POST",
+                data: JSON.stringify({ datos: datos }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    var mensaje = data.mensaje;
+
+                    //Validacion de campos del formulario
+                    if (mensaje == 1) {
+
+                        //Recargar la pagina de la encuesta
+                        window.location.href = '@Url.Action("GuardarNuevoAvion", "Home")';
+                    }
+                },
+                error: function (error) {
+                    alert(error);
+                },
+                beforedSend: function () {
+
+                }
+            });*@
+        })
+
     </script>
 }
-

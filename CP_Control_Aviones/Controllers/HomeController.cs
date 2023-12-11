@@ -22,7 +22,14 @@ namespace CP_Control_Aviones.Controllers
          return View();
       }
 
+      //Pagina con formulario para ingreso de aviones a la lista temporal
       public ActionResult IngresarNuevoAvion()
+      {
+         return View();
+      }
+
+      //Pagina con formulario para guardar de aviones a la base de datos
+      public ActionResult GuardarNuevoAvion()
       {
          return View();
       }
@@ -94,7 +101,7 @@ namespace CP_Control_Aviones.Controllers
       }
 
       //Agregar un nuevo avion a la lista temporal 
-      public JsonResult agregarAvionAListaTemporal(avion datosAvion)
+      public JsonResult IngresarAvionAListaTemporal(avion datosAvion)
       {
          //Extraer la lista temporal de aviones de la sesion  
          listaAviones = (List<avion>) Session["listaAviones"];
@@ -108,10 +115,18 @@ namespace CP_Control_Aviones.Controllers
          {
             listaAviones = new List<avion>();
             listaAviones.Add(datosAvion);
-         }         
+         }    
 
          //Agregar la lista de aviones nuevamente a la variable de sesion 
          Session["listaAviones"] = listaAviones;
+
+         return Json(new { mensaje = "1" }, JsonRequestBehavior.AllowGet);
+      }
+
+      //Agregar un nuevo avion a la lista temporal 
+      public JsonResult GuardarAvionBD(avion datosAvion)
+      {
+         string resultado = string.Empty;
 
          return Json(new { mensaje = "1" }, JsonRequestBehavior.AllowGet);
       }
